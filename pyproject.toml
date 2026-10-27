@@ -1,0 +1,23 @@
+[project]
+name = "fly-in"
+version = "0.1.0"
+description = "Simulador e otimizador de encaminhamento de drones in real time"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+	"mypy>=1.8.0",
+	"flake8>=7.0.0",
+	"pytest>=8.0.0"
+]
+
+[tool.mypy]
+python-version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = false
+disallow_untyped_defs = true
+check_untyped_defs = true
