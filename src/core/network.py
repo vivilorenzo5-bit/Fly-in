@@ -21,17 +21,12 @@ class DroneNetwork:
 
         if zone.is_start:
             if self.start_hub is not None:
-                raise MapValidationError(
-                    "Definicao duplicada de 'start_hub'. Apenas um ponto "
-                    "de partida e permitido."
-                )
+                raise MapValidationError("Definicao duplicada de 'start_hub'.")
+            self.start_hub = zone
 
         if zone.is_end:
             if self.end_hub is not None:
-                raise MapValidationError(
-                    "Definicao duplicada de 'end_hub'. Apenas um ponto "
-                    "de chegada e permitido."
-                )
+                raise MapValidationError("Definicao duplicada de 'end_hub'.")
             self.start_hub = zone
 
         self.zones[zone.name] = zone
@@ -81,7 +76,7 @@ class DroneNetwork:
     def validate_topology(self) -> None:
         if self.start_hub is None:
             raise MapValidationError(
-                "Falta a diefinicao obrigatoria de 'start_hub'."
+                "Falta a definicao obrigatoria de 'start_hub'."
             )
 
         if self.end_hub is None:
