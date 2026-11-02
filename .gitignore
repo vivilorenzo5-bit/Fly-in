@@ -1,0 +1,11 @@
+# Ambientes virtuais
+.venv/
+
+# Caches de ferramentas
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Metadados de empacotamento
+*.egg-info/

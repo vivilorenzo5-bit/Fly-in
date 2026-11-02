@@ -9,7 +9,7 @@ all: install
 
 install:
 		$(UV) venv $(VENV)
-		$(UV) pip install -e . --extra dev
+		$(UV) pip install -e ".[dev]"
 
 run:
 		@if [ -z "$(MAP)" ]; then \
@@ -27,7 +27,7 @@ debug:
 
 clean:
 		rm -rf $(VENV)
-		rm -rf .mypy_cache .pytest_cache
+		rm -rf .mypy_cache .pytest_cache *.egg-info
 		find . -type d -name "__pycache__" -exec rm -rf {} +
 		find . -type f -name "*.pyc" -delete
 

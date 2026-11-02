@@ -109,7 +109,7 @@ class MapParser:
             raise ParsingError(
                 line_num,
                 raw_line,
-                "Bloco de metadados mal formado. Falta fechar o "
+                "Bloco de metadados mal formatado. Falta fechar o "
                 "parenteses reto correspondente."
             )
 
