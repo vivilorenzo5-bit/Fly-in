@@ -47,6 +47,10 @@ class Zone:
         return self.zone_type != ZoneType.BLOCKED
 
     @property
+    def cost(self) -> int:
+        return self.zone_type.cost
+
+    @property
     def has_capacity(self) -> bool:
         if self.max_drones is None:
             return True

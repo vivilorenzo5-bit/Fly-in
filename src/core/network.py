@@ -27,7 +27,7 @@ class DroneNetwork:
         if zone.is_end:
             if self.end_hub is not None:
                 raise MapValidationError("Definicao duplicada de 'end_hub'.")
-            self.start_hub = zone
+            self.end_hub = zone
 
         self.zones[zone.name] = zone
         self._adjacency[zone.name] = []
@@ -101,8 +101,8 @@ class DroneNetwork:
 
         if not self._is_reachable(self.start_hub.name, self.end_hub.name):
             raise MapValidationError(
-                f"Nao existe caminho viavel de '{self.start_hub.name} "
-                f"ate '{self.end_hub.name}'."
+                f"Grafo desconexo: Nao existe caminho viavel "
+                f"de '{self.start_hub.name} ate '{self.end_hub.name}'."
             )
 
     def _is_reachable(self, start_name: str, end_name: str) -> bool:

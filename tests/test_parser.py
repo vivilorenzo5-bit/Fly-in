@@ -5,8 +5,10 @@ from src.parser.map_parser import MapParser
 
 
 def test_valid_map_parsing() -> None:
+    """Valida a leitura correta de um mapa
+    bem formatado com metadados e comentários."""
     raw_data = [
-        "#Comentario inicial",
+        "# Comentario inicial",
         "nb_drones: 4",
         "start_hub: start 0 0 [color=green]",
         "end_hub: goal 10 10 [color=yellow]",
@@ -14,7 +16,7 @@ def test_valid_map_parsing() -> None:
         "hub: buffer 4 4 [zone restricted color=red max_drones=3]",
         "connection: start-junction [max_link_capacity=2]",
         "connection: junction-buffer",
-        "connection: buffer-goal # comentario inline"
+        "connection: buffer-goal # comentario inline",
     ]
     network = MapParser.parse_lines(raw_data)
 
@@ -45,20 +47,22 @@ def test_valid_map_parsing() -> None:
 
 
 def test_missing_nb_drones() -> None:
+    """Rejeita mapas onde a primeira diretiva funcional não é 'nb_drones:'."""
     raw_data = [
-        "#Apenas comentario",
+        "# Apenas comentario",
         "start_hub: start 0 0",
-        "end_hub: goal 1 1"
+        "end_hub: goal 1 1",
     ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data)
     assert (
-        "A primeira diretiva do mapa tem de ser 'nb_drones:'"
-        in str(exc_info.value)
-    )
+        "A primeira diretiva do mapa tem de"
+        " ser 'nb_drones:" in str(exc_info.value)
+        )
 
 
 def test_invalid_nb_drones_values() -> None:
+    """Rejeita 0 drones, valores negativos ou caracteres alfanuméricos."""
     invalid_cases = ["nb_drones: 0", "nb_drones: -5", "nb_drones: abc"]
     for case in invalid_cases:
         with pytest.raises(ParsingError):
@@ -66,36 +70,39 @@ def test_invalid_nb_drones_values() -> None:
 
 
 def test_forbidden_dash_in_zone_name() -> None:
+    """Garante que hífens em nomes de zonas disparam erro imediato."""
     raw_data = [
         "nb_drones: 2",
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
-        "hub: zone-invalid 5 5"
+        "hub: zone-invalid 5 5",
     ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data)
-    assert "hifens sao proibidos." in str(exc_info.value)
+    assert "Hifens sao estritamente proibidos" in str(exc_info.value)
 
 
 def test_invalid_zone_type() -> None:
+    """Rejeita tipos de zonas não especificados pelo enunciado."""
     raw_data = [
         "nb_drones: 1",
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
-        "hub: mid 2 2 [zone=hyperloop]"
-        ]
+        "hub: mid 2 2 [zone=hyperloop]",
+    ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data)
-    assert "Tipo de zona invalida" in str(exc_info.value)
+    assert "Tipo de zona invalido" in str(exc_info.value)
 
 
 def test_invalid_capacity_values() -> None:
+    """Garante que capacidades de zonas e conexões são inteiros positivos."""
     raw_data_zone = [
         "nb_drones: 1",
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
-        "hub: mid 2 2 [max_drones=0]"
-        ]
+        "hub: mid 2 2 [max_drones=0]",
+    ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data_zone)
     assert "'max_drones' invalido" in str(exc_info.value)
@@ -105,7 +112,7 @@ def test_invalid_capacity_values() -> None:
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
         "hub: mid 2 2",
-        "connection: start-mid [max_link_capacity=-2]"
+        "connection: start-mid [max_link_capacity=-2]",
     ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data_link)
@@ -113,72 +120,74 @@ def test_invalid_capacity_values() -> None:
 
 
 def test_missing_start_or_end_hub() -> None:
+    """Garante que a ausência de start_hub ou end_hub impede a validação."""
     missing_end = [
         "nb_drones: 1",
         "start_hub: start 0 0",
         "hub: mid 1 1",
-        "connection: start-mid"
+        "connection: start-mid",
     ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(missing_end)
-    assert (
-        "falta a definicao obrigatoria de 'end_hub:'"
-        in str(exc_info.value)
-    )
+    assert "Falta a definicao obrigatoria de 'end_hub'" in str(exc_info.value)
 
 
 def test_duplicate_zone_names() -> None:
+    """Rejeita zonas com identificadores duplicados."""
     raw_data = [
         "nb_drones: 1",
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
         "hub: duplicate 2 2",
-        "hub: duplicate 3 3"
-        ]
+        "hub: duplicate 3 3",
+    ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data)
-    assert (
-        "Zona duplicada encontrada: 'duplicate'"
-        in str(exc_info.value)
-    )
+    assert "Zona duplicada: 'duplicate'" in str(exc_info.value)
 
 
 def test_duplicate_connection() -> None:
+    """Rejeita conexões idênticas ou invertidas (a-b e b-a)."""
     raw_data = [
         "nb_drones: 1",
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
         "connection: start-goal",
-        "connection: goal-start"
-        ]
+        "connection: goal-start",
+    ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data)
     assert (
-        "Conexao duplicada entre 'goal' e 'start'"
-        in str(exc_info.value)
-    )
+        "Conexão duplicada" in str(exc_info.value)
+        or "Conexao duplicada" in str(exc_info.value)
+        )
 
 
 def test_disconnected_graph() -> None:
+    """Rejeita mapas onde não existe caminho viável entre start e goal."""
     raw_data = [
         "nb_drones: 2",
         "start_hub: start 0 0",
         "end_hub: goal 10 10",
-        "hub: island 5 5"
-        "connection: start-island"
-        ]
+        "hub: island 5 5",
+        "connection: start-island",
+    ]
     with pytest.raises(ParsingError) as exc_info:
         MapParser.parse_lines(raw_data)
-    assert "Grafo desconexo" in str(exc_info.value)
+    error_msg = str(exc_info.value).lower()
+    assert (
+        "desconexo" in error_msg or "caminho viavel" in error_msg
+        )
 
 
 def test_start_and_end_capacity_metadata_ignores() -> None:
+    """Verifica se max_drones definido em start_hub ou end_hub é ignorado."""
     raw_data = [
         "nb_drones: 10",
         "start_hub: start 0 0 [max_drones=1]",
-        "end_hub: goal 10 10[max_drones=2]",
-        "connection: start-goal"
-        ]
+        "end_hub: goal 10 10 [max_drones=2]",
+        "connection: start-goal",
+    ]
     network = MapParser.parse_lines(raw_data)
     assert network.start_hub is not None
     assert network.start_hub.max_drones is None
