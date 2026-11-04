@@ -3,6 +3,7 @@ from src.core.connection import Connection
 
 
 class ReservationTable:
+    """Tabela de reservas para zonas e ligacoes"""
     def __init__(self) -> None:
         # nome da zona, turno, nbr de drones agendados
         self._zone_reservations: dict[tuple[str, int], int] = {}
@@ -10,6 +11,7 @@ class ReservationTable:
         self._link_reservations: dict[tuple[str, int], int] = {}
 
     def is_zone_available(self, zone: Zone, turn: int) -> bool:
+        """Verifica se uma zona tem capacidade livre num turno especifico"""
         if not zone.is_accessible:
             return False
         if zone.max_drones is None:
@@ -19,10 +21,13 @@ class ReservationTable:
         return current_occupancy < zone.max_drones
 
     def is_link_available(self, connection: Connection, turn: int) -> bool:
+        """Verifica se uma ligacao suporta mais uma travessia num turno
+            especifico"""
         current_usage = self.get_link_usage(connection.canonical_id, turn)
         return current_usage < connection.max_capacity
 
     def reserve_zone(self, zone: Zone, turn: int) -> None:
+        """Reserva uma vaga numa zona para um determinado turno"""
         key = (zone.name, turn)
         current = self._zone_reservations.get(key, 0)
 
@@ -35,6 +40,7 @@ class ReservationTable:
         self._zone_reservations[key] = current + 1
 
     def reserve_link(self, connection: Connection, turn: int) -> None:
+        """Reserva passagem numa ligacao para um determinado turno"""
         key = (connection.canonical_id, turn)
         current = self._link_reservations.get(key, 0)
 
@@ -47,6 +53,7 @@ class ReservationTable:
         self._link_reservations[key] = current + 1
 
     def cancel_zone_reservation(self, zone: Zone, turn: int) -> None:
+        """Cancela uma reserva previa de zona """
         key = (zone.name, turn)
         if key in self._zone_reservations:
             self._zone_reservations[key] -= 1
@@ -56,6 +63,7 @@ class ReservationTable:
     def cancel_link_reservation(
             self, connection: Connection, turn: int
             ) -> None:
+        """Cancela uma reserva previa de ligacao"""
         key = (connection.canonical_id, turn)
         if key in self._link_reservations:
             self._link_reservations[key] -= 1
@@ -63,11 +71,14 @@ class ReservationTable:
                 del self._link_reservations[key]
 
     def get_zone_usage(self, zone_name: str, turn: int) -> int:
+        """Retorna o numero de reservas ativas para uma zuna num turno"""
         return self._zone_reservations.get((zone_name, turn), 0)
 
     def get_link_usage(self, canonical_link_id: str, turn: int) -> int:
+        """Retorna o numero de reservas ativas para uma ligacao num turno"""
         return self._link_reservations.get((canonical_link_id, turn), 0)
 
     def clear(self) -> None:
+        """Limpa todas as reservas registadas na tabela."""
         self._zone_reservations.clear()
         self._link_reservations.clear()
