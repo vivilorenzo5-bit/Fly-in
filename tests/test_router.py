@@ -1,7 +1,4 @@
-"""Testes unitários para validar a lógica de roteamento MAPF e o Router."""
-
 from src.core.zone import Zone, ZoneType
-from src.core.connection import Connection
 from src.core.network import DroneNetwork
 from src.routing.reservation import ReservationTable
 from src.routing.router import Router
