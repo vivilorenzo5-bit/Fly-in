@@ -1,11 +1,9 @@
 import sys
 from pathlib import Path
 
-# Adiciona a raiz do projeto ao sys.path para reconhecer o pacote 'src'
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
-# Agora os imports de 'src' funcionam sem qualquer erro
 import time
 from dataclasses import dataclass
 from typing import Dict, List, Optional
