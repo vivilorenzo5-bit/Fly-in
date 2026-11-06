@@ -26,7 +26,6 @@ debug:
 		$(RUN_PY) -m pdb main.py $(MAP)
 
 clean:
-		rm -rf $(VENV)
 		rm -rf .mypy_cache .pytest_cache *.egg-info
 		find . -type d -name "__pycache__" -exec rm -rf {} +
 		find . -type f -name "*.pyc" -delete

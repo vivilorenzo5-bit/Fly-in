@@ -88,9 +88,9 @@ class TerminalVisualiser:
             moves_display = cls.render_turn(turn, network)
             print(f"{turn_header} {moves_display}")
 
-            if show_capacity and turn.capacity_snapshot:
-                cap_str = ", ".join(turn.capacity_snapshot)
-                print(cls.colorize(f"      |-> Uso: {cap_str}", "gray"))
+            # if show_capacity and turn.capacity_snapshot:
+            #     cap_str = ", ".join(turn.capacity_snapshot)
+            #     print(cls.colorize(f"      |-> Uso: {cap_str}", "gray"))
 
         total_turns = len(turns)
         print(cls.colorize(
