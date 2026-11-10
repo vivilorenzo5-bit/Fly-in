@@ -43,11 +43,11 @@ class Connection:
         if self.current_transit > 0:
             self.current_transit -= 1
 
-    def capacity_info(self) -> str:
-        return (
-                f"Connection {self.display_name}: "
-                f"{self.current_transit}/{self.max_capacity} capacity used"
-        )
+    # def capacity_info(self) -> str:
+        # return (
+            # f"Connection {self.display_name}: "
+            # f"{self.current_transit}/{self.max_capacity} capacity used"
+        # )
 
     def __repr__(self) -> str:
         return (

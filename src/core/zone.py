@@ -63,9 +63,9 @@ class Zone:
         if self.current_drones > 0:
             self.current_drones -= 1
 
-    def capacity_info(self) -> str:
-        max_str = "∞" if self.max_drones is None else str(self.max_drones)
-        return f"Zone {self.name}: {self.current_drones}/{max_str} drones"
+    # def capacity_info(self) -> str:
+        # max_str = "∞" if self.max_drones is None else str(self.max_drones)
+        # return f"Zone {self.name}: {self.current_drones}/{max_str} drones"
 
     def __repr__(self) -> str:
         return (f"Zone(name='{self.name}', type={self.zone_type.value}, "

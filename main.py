@@ -44,7 +44,6 @@ def main() -> None:
         # 1. Parsing e validação da topologia da rede
         network = MapParser.parse_file(args.map_file)
 
-        # 2. Inicialização da tabela de reservas e cálculo do plano ótimo
         # (Space-Time A*)
         reservation_table = ReservationTable()
         router = Router(network, reservation_table)
@@ -61,7 +60,6 @@ def main() -> None:
                 show_capacity=args.capacity_info
             )
         else:
-            # Modo padrão exigido pelo subject: turnos em linhas de texto puro
             for turn in turn_results:
                 if turn.movements:
                     print(turn.output_line)
